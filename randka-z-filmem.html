@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Randka z Filmem 🎬</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #f4f6fb;
+            color: #1a1a2e;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #fff;
+            border-bottom: 1px solid #e8eaf0;
+            padding: 18px 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon { font-size: 1.8rem; }
+
+        .logo-text {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #6c2bd9;
+            letter-spacing: 1px;
+        }
+
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px 20px 60px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 8px;
+            color: #1a1a2e;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 1rem;
+            margin-bottom: 44px;
+            text-align: center;
+        }
+
+        /* --- Slot machine --- */
+        .slot-wrapper {
+            width: 460px;
+            max-width: 90vw;
+            background: #fff;
+            border: 2px solid #e0d7f8;
+            border-radius: 16px;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 28px;
+            box-shadow: 0 4px 16px rgba(108, 43, 217, 0.08);
+        }
+
+        #slotText {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #a78bda;
+            text-align: center;
+            padding: 0 20px;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            transition: color 0.3s;
+        }
+
+        #slotText.settled { color: #6c2bd9; }
+
+        /* --- Button --- */
+        .btn-losuj {
+            background: linear-gradient(135deg, #6c2bd9, #9b59f7);
+            color: #fff;
+            border: none;
+            padding: 15px 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 6px 20px rgba(108, 43, 217, 0.35);
+        }
+
+        .btn-losuj:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(108, 43, 217, 0.45);
+        }
+
+        .btn-losuj:active:not(:disabled) { transform: translateY(0); }
+
+        .btn-losuj:disabled {
+            background: #c4bcd6;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        /* --- Result card --- */
+        #result {
+            display: none;
+            width: 100%;
+            max-width: 860px;
+            margin-top: 44px;
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.10);
+            animation: slideUp 0.4s ease;
+        }
+
+        #result.visible { display: flex; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        #poster {
+            width: 240px;
+            min-width: 240px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .info {
+            padding: 28px 26px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        #filmTitle {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #1a1a2e;
+            line-height: 1.2;
+        }
+
+        #yearGenre {
+            color: #9ca3af;
+            font-size: 0.88rem;
+        }
+
+        .rating-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #stars { color: #f59e0b; font-size: 1.1rem; }
+        #ratingNum { font-weight: 700; font-size: 0.95rem; color: #374151; }
+        #voteCount { color: #9ca3af; font-size: 0.82rem; }
+
+        .label {
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #6c2bd9;
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+
+        #description {
+            color: #4b5563;
+            line-height: 1.75;
+            font-size: 0.93rem;
+        }
+
+        #actors {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+
+        .chip {
+            background: #f3eeff;
+            border-radius: 20px;
+            padding: 5px 13px;
+            font-size: 0.82rem;
+            color: #6c2bd9;
+            border: 1px solid #e0d7f8;
+            font-weight: 500;
+        }
+
+        .btn-again {
+            align-self: flex-start;
+            background: transparent;
+            border: 2px solid #6c2bd9;
+            color: #6c2bd9;
+            padding: 9px 22px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.88rem;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .btn-again:hover {
+            background: #6c2bd9;
+            color: #fff;
+        }
+
+        #error {
+            display: none;
+            color: #ef4444;
+            margin-top: 14px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <span class="logo-icon">🎬</span>
+    <span class="logo-text">Randka z Filmem</span>
+</header>
+
+<div class="hero">
+    <h1>Nie wiesz co dziś obejrzeć?</h1>
+    <p class="subtitle">Naciśnij przycisk — my wybierzemy za Ciebie.</p>
+
+    <div class="slot-wrapper">
+        <div id="slotText">?</div>
+    </div>
+
+    <button class="btn-losuj" id="btnLosuj" onclick="losuj()">🎲 &nbsp;Losuj film</button>
+
+    <p id="error">Wystąpił błąd połączenia. Sprawdź internet i spróbuj ponownie.</p>
+
+    <div id="result">
+        <img id="poster" src="" alt="Plakat filmu">
+        <div class="info">
+            <div>
+                <div id="filmTitle"></div>
+                <div id="yearGenre"></div>
+            </div>
+            <div class="rating-row">
+                <span id="stars"></span>
+                <span id="ratingNum"></span>
+                <span id="voteCount"></span>
+            </div>
+            <div>
+                <div class="label">Opis</div>
+                <p id="description"></p>
+            </div>
+            <div>
+                <div class="label">Obsada</div>
+                <div id="actors"></div>
+            </div>
+            <button class="btn-again" onclick="losuj()">🔄 Losuj jeszcze raz</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_KEY = '6317d0305252a2dfb1fdfcbeca486455';
+    const BASE    = 'https://api.themoviedb.org/3';
+    const IMG     = 'https://image.tmdb.org/t/p/w500';
+
+    let movies = [];
+
+    async function fetchMovies() {
+        const pages = await Promise.all([1, 2, 3].map(p =>
+            fetch(`${BASE}/movie/top_rated?api_key=${API_KEY}&language=pl-PL&page=${p}`)
+                .then(r => r.json())
+        ));
+        movies = pages.flatMap(p => p.results).filter(m => m.poster_path);
+    }
+
+    async function fetchDetails(id) {
+        const r = await fetch(
+            `${BASE}/movie/${id}?api_key=${API_KEY}&language=pl-PL&append_to_response=credits`
+        );
+        return r.json();
+    }
+
+    function stars(score) {
+        const full = Math.round(score / 2);
+        return '★'.repeat(full) + '☆'.repeat(5 - full);
+    }
+
+    function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    async function animateDrum(finalTitle) {
+        const el = document.getElementById('slotText');
+        el.classList.remove('settled');
+        const delays = [60, 60, 70, 80, 100, 120, 150, 190, 240, 300, 380];
+        for (const ms of delays) {
+            el.textContent = movies[Math.floor(Math.random() * movies.length)].title;
+            await wait(ms);
+        }
+        el.textContent = finalTitle;
+        el.classList.add('settled');
+    }
+
+    async function losuj() {
+        const btn = document.getElementById('btnLosuj');
+        const err = document.getElementById('error');
+
+        btn.disabled = true;
+        err.style.display = 'none';
+        document.getElementById('result').classList.remove('visible');
+
+        try {
+            if (movies.length === 0) {
+                document.getElementById('slotText').textContent = 'Ładowanie…';
+                await fetchMovies();
+            }
+
+            const movie = movies[Math.floor(Math.random() * movies.length)];
+            await animateDrum(movie.title);
+
+            const d = await fetchDetails(movie.id);
+
+            document.getElementById('poster').src =
+                d.poster_path ? IMG + d.poster_path
+                              : 'https://placehold.co/240x360/f3eeff/6c2bd9?text=Brak+plakatu';
+
+            document.getElementById('filmTitle').textContent = d.title;
+
+            const year   = d.release_date?.slice(0, 4) ?? '';
+            const genres = d.genres?.map(g => g.name).join(' · ') ?? '';
+            document.getElementById('yearGenre').textContent =
+                [year, genres].filter(Boolean).join('  ·  ');
+
+            document.getElementById('stars').textContent     = stars(d.vote_average ?? 0);
+            document.getElementById('ratingNum').textContent = `${(d.vote_average ?? 0).toFixed(1)}/10`;
+            document.getElementById('voteCount').textContent = `(${(d.vote_count ?? 0).toLocaleString()} głosów)`;
+
+            document.getElementById('description').textContent =
+                d.overview || 'Brak opisu w języku polskim.';
+
+            document.getElementById('actors').innerHTML =
+                (d.credits?.cast?.slice(0, 6) ?? [])
+                    .map(a => `<span class="chip">${a.name}</span>`)
+                    .join('');
+
+            document.getElementById('result').classList.add('visible');
+
+        } catch (e) {
+            err.style.display = 'block';
+            document.getElementById('slotText').textContent = '?';
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    fetchMovies();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+Zakres ogólny i zasady zaliczenia
+
+Zaprojektuj i wykonaj własny program lub aplikację w języku Python lub JavaScript - z
+pomocą dowolnego narzędzia AI (np. ChatGPT, Claude, Gemini, Copilot).
+Nie musisz umieć programować - AI ma Ci w tym pomóc. Twoją rolą jest
+wymyślenie pomysłu, kierowanie pracą AI i złożenie gotowego projektu.
+
+
+Wymagania
+Aplikacja działa i robi to, co miała robić.
+Posiada prosty interfejs — okno, strona internetowa lub wyniki w konsoli.
+Została wykonana w języku Python lub JavaScript.
+Do projektu dołączasz krótką notatkę (kilka zdań): co robi aplikacja, jakiego narzędzia AI użyłeś/aś, co było najtrudniejsze.
+
+
+Pomysł na zakres szczegółowy:
+Losuje spośród 50 top filmów na filmweb(np z 2025) tytuł.
+
+pokazuje, opis filmu, opinie, punktacje w rankingu, aktorów, nagrody i gdzie moŻNA OBEJRZEĆ
+Można wcześniej dodać jakąś animacje na czas losowania która podniesie atrakcyjność
